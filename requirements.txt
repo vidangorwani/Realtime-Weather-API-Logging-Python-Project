@@ -1,0 +1,5 @@
+requests
+matplotlib
+plotly
+kaleido
+python-dotenv
