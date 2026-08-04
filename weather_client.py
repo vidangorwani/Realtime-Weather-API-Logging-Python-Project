@@ -4,9 +4,15 @@ import requests
 from config import GEOCODE_URL
 
 
+class WeatherAPIError(RuntimeError):
+    pass
+
+
 def get_coordinates(city: str, api_key: str) -> tuple[float, float]:
     params = {"q": city, "limit": 1, "appid": api_key}
     resp = requests.get(GEOCODE_URL, params=params, timeout=10)
     resp.raise_for_status()
     results = resp.json()
+    if not results:
+        raise WeatherAPIError(f"Could not find a location matching '{city}'")
     return results[0]["lat"], results[0]["lon"]
