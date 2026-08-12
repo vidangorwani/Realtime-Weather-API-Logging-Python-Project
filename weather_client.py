@@ -31,5 +31,9 @@ def get_historical_weather(lat: float, lon: float, day: datetime, api_key: str) 
     return {
         "date": day.date().isoformat(),
         "temp": entry.get("temp"),
+        "feels_like": entry.get("feels_like"),
         "humidity": entry.get("humidity"),
+        "pressure": entry.get("pressure"),
+        "wind_speed": entry.get("wind_speed"),
+        "clouds": entry.get("clouds"),
     }
