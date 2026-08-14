@@ -1,5 +1,5 @@
 """Talks to the OpenWeatherMap geocoding and historical (timemachine) APIs."""
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 import requests
 
@@ -37,3 +37,15 @@ def get_historical_weather(lat: float, lon: float, day: datetime, api_key: str) 
         "wind_speed": entry.get("wind_speed"),
         "clouds": entry.get("clouds"),
     }
+
+
+def fetch_history(city: str, start_date: datetime, num_days: int, api_key: str) -> list[dict]:
+    lat, lon = get_coordinates(city, api_key)
+    records = []
+    for i in range(num_days):
+        day = start_date + timedelta(days=i)
+        try:
+            records.append(get_historical_weather(lat, lon, day, api_key))
+        except requests.HTTPError as exc:
+            print(f"  Skipping {day.date()}: {exc}")
+    return records
