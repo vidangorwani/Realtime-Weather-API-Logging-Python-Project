@@ -1,5 +1,9 @@
 """Shared configuration and API key handling."""
 import os
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent
+RESULTS_DIR = BASE_DIR / "results"
 
 GEOCODE_URL = "https://api.openweathermap.org/geo/1.0/direct"
 TIMEMACHINE_URL = "https://api.openweathermap.org/data/3.0/onecall/timemachine"
