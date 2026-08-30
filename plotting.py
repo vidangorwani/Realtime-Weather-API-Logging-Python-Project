@@ -1,7 +1,8 @@
-"""Builds matplotlib charts from fetched weather records and saves them to results/."""
+"""Builds matplotlib and plotly charts from fetched weather records and saves them to results/."""
 from pathlib import Path
 
 import matplotlib.pyplot as plt
+import plotly.graph_objects as go
 
 from config import RESULTS_DIR
 
@@ -37,3 +38,27 @@ def plot_matplotlib(records: list[dict], city: str, start: str, end: str, out_di
     fig.tight_layout()
     fig.savefig(out_dir / "matplotlib_overview.png", dpi=150)
     plt.close(fig)
+
+
+def plot_plotly(records: list[dict], city: str, start: str, end: str, out_dir: Path) -> None:
+    dates = [r["date"] for r in records]
+
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(x=dates, y=[r["temp"] for r in records],
+                              name="Temperature (\u00b0C)", mode="lines+markers"))
+    fig.add_trace(go.Scatter(x=dates, y=[r["humidity"] for r in records],
+                              name="Humidity (%)", mode="lines+markers", yaxis="y2"))
+
+    fig.update_layout(
+        title=f"Temperature & humidity for {city.title()} ({start} to {end})",
+        xaxis_title="Date",
+        yaxis=dict(title="Temperature (\u00b0C)"),
+        yaxis2=dict(title="Humidity (%)", overlaying="y", side="right"),
+        legend=dict(orientation="h"),
+    )
+
+    try:
+        fig.write_image(str(out_dir / "plotly_interactive.png"), width=1000, height=600)
+    except Exception as exc:
+        print(f"  (skipped PNG export for plotly chart: {exc})")
+    fig.write_html(str(out_dir / "plotly_interactive.html"))
