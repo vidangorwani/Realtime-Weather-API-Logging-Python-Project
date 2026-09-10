@@ -62,3 +62,10 @@ def plot_plotly(records: list[dict], city: str, start: str, end: str, out_dir: P
     except Exception as exc:
         print(f"  (skipped PNG export for plotly chart: {exc})")
     fig.write_html(str(out_dir / "plotly_interactive.html"))
+
+
+def generate_all_plots(records: list[dict], city: str, start: str, end: str) -> Path:
+    out_dir = _output_dir(city, start, end)
+    plot_matplotlib(records, city, start, end, out_dir)
+    plot_plotly(records, city, start, end, out_dir)
+    return out_dir
